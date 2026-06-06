@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: joy-backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: GROQ_KEY
+        sync: false
+      - key: OR_KEY
+        sync: false
+      - key: CEREBRAS_KEY
+        sync: false
+      - key: COHERE_KEY
+        sync: false
+      - key: WEATHER_KEY
+        sync: false
