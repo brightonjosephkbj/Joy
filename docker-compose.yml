@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  joy-backend:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - GROQ_KEY=${GROQ_KEY}
+      - OR_KEY=${OR_KEY}
+      - CEREBRAS_KEY=${CEREBRAS_KEY}
+      - COHERE_KEY=${COHERE_KEY}
+      - WEATHER_KEY=${WEATHER_KEY}
+    restart: unless-stopped
