@@ -191,16 +191,14 @@ app.post('/api/weather/comment', async (req, res) => {
 
 // ── IMAGE GENERATION (Pollinations AI)
 app.post('/api/imagine', async (req, res) => {
-  const { prompt, width = 1024, height = 1024, model = 'flux', nologo = true } = req.body;
+  const { prompt, width = 1024, height = 1024, model = 'flux' } = req.body;
   if (!prompt) return res.status(400).json({ error: 'prompt required' });
   if (!POLLINATIONS_KEY) return res.status(500).json({ error: 'POLLINATIONS_KEY not set' });
 
   try {
-    // Clean and encode the prompt
-    const cleanPrompt = prompt.trim().slice(0, 500);
+    const cleanPrompt   = prompt.trim().slice(0, 500);
     const encodedPrompt = encodeURIComponent(cleanPrompt);
-
-    const url = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&model=${model}&nologo=${nologo}&enhance=true`;
+    const url = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&model=${model}&nologo=true&enhance=true`;
 
     const r = await fetch(url, {
       headers: { 'Authorization': `Bearer ${POLLINATIONS_KEY}` }
@@ -208,10 +206,10 @@ app.post('/api/imagine', async (req, res) => {
 
     if (!r.ok) throw new Error('Pollinations error ' + r.status);
 
-    // Get image as buffer and return as base64
-    const buffer = await r.buffer();
-    const base64  = buffer.toString('base64');
-    const mimeType = r.headers.get('content-type') || 'image/jpeg';
+    // Use arrayBuffer instead of buffer() for compatibility
+    const arrayBuffer = await r.arrayBuffer();
+    const base64      = Buffer.from(arrayBuffer).toString('base64');
+    const mimeType    = r.headers.get('content-type') || 'image/jpeg';
 
     res.json({
       image: `data:${mimeType};base64,${base64}`,
